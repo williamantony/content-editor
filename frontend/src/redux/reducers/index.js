@@ -1,13 +1,9 @@
 import { combineReducers } from 'redux';
 
-const initialState = {
-
-};
-
-const reducer = (state = initialState, action) => {
-  return state;
-};
+import content from './content.reducer';
+import selection from './selection.reducer';
 
 export default combineReducers({
-  reducer,
+  content,
+  selection,
 });
