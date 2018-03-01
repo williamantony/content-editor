@@ -105,6 +105,58 @@ class InputArea extends Component {
 
     }
 
+    this.cleanUp();
+
+  }
+
+  cleanUp = () => {
+    
+    const { selection } = this.props;
+    const { baseNode, focusNode } = selection;
+    const range = selection.getRangeAt(0);
+
+    if (focusNode !== this.props.editor) {
+
+      const nodesList = Array.from(this.props.editor.childNodes);
+      const focusNodeIndex = nodesList.indexOf(focusNode);
+      
+      range.setStart(this.props.editor, focusNodeIndex);
+      range.setEnd(this.props.editor, focusNodeIndex + 1);
+
+      const clone = range.cloneContents();
+      const fragment = document.createDocumentFragment();
+
+      Array.from(clone.childNodes)
+        .forEach(child => {
+
+          Array.from(child.childNodes)
+            .forEach(childNode => {
+
+              let node = childNode;
+
+              if (childNode.nodeType === 3) {
+                if (childNode.nodeValue !== '') {
+
+                  node = document.createElement('span');
+                  node.appendChild(childNode);
+                  fragment.appendChild(node);
+
+                }
+              }
+              
+              fragment.appendChild(node);
+
+            });
+
+        });
+
+      range.deleteContents();
+      range.insertNode(fragment);
+    
+    }
+    
+    selection.collapseToEnd();
+
   }
   
   componentDidMount() {
