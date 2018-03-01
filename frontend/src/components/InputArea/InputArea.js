@@ -10,7 +10,7 @@ import './InputArea.css';
 class InputArea extends Component {
 
   state = {
-    content: ''
+    content: '<br/>'
   }
   
   handleBlur = (event) => {
@@ -101,11 +101,11 @@ class InputArea extends Component {
         range.insertNode(character);
         selection.collapseToEnd();
 
+        this.cleanUp();
+
       }
 
     }
-
-    this.cleanUp();
 
   }
 
@@ -116,6 +116,8 @@ class InputArea extends Component {
     const range = selection.getRangeAt(0);
 
     if (focusNode !== this.props.editor) {
+
+      console.log(focusNode);
 
       const nodesList = Array.from(this.props.editor.childNodes);
       const focusNodeIndex = nodesList.indexOf(focusNode);
