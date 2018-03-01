@@ -77,7 +77,31 @@ class InputArea extends Component {
 
     else {
 
-      // Other Keys Goes Here
+      const { key, keyCode } = event;
+
+      var valid = 
+        (keyCode > 47 && keyCode < 58)   ||
+        (keyCode > 64 && keyCode < 91)   ||
+        (keyCode > 95 && keyCode < 112)  ||
+        (keyCode > 185 && keyCode < 193) ||
+        (keyCode > 218 && keyCode < 223);
+          
+      if (valid && !event.ctrlKey) {
+        event.preventDefault();
+        
+        const { selection } = this.props;
+        const range = selection.getRangeAt(0);
+
+        const character = document.createElement('span');
+        const textNode = document.createTextNode(key);
+        character.appendChild(textNode);
+        
+        range.deleteContents();
+
+        range.insertNode(character);
+        selection.collapseToEnd();
+
+      }
 
     }
 
