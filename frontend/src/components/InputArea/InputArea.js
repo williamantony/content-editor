@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { setEditor, updateInput, getSelectionUpdate } from '../../redux/actions';
+import { 
+  setEditor, 
+  updateInput, 
+  getSelectionUpdate 
+} from '../../redux/actions';
 import './InputArea.css';
 
 class InputArea extends Component {
 
   state = {
-    content: 'Hello',
-    caret: 0
+    content: ''
   }
   
   handleBlur = (event) => {
@@ -17,17 +20,73 @@ class InputArea extends Component {
 
   handleMouseUp = (event) => {
     this.props.getSelectionUpdate();
-    // Remove empty span tags
-    this.props.editor.querySelectorAll('span')
-      .forEach(span => {
-        if (span.innerHTML === ''){ console.log(span)
-          span.parentNode.removeChild(span);}
-      });
   }
 
   handleMouseDown = (event) => {
     if (this.props.editor === null)
       this.props.setEditor(event.target);
+  }
+
+  handleKeyDown = (event) => {
+
+    // console.log(event.keyCode);
+    
+    const keysWithRules = [9, 13, 18, 27, 32];
+
+    if (keysWithRules.includes(event.keyCode))
+      event.preventDefault();
+
+    if (event.keyCode === 9) {
+      // Tab
+      const { selection } = this.props;
+      const range = selection.getRangeAt(0);
+      const tabSpace = document.createElement('tab');
+      tabSpace.innerHTML = '&emsp;';
+      range.insertNode(tabSpace);
+      selection.collapseToEnd();
+    }
+
+    else if (event.keyCode === 13) {
+      // Enter
+      const { selection } = this.props;
+      const range = selection.getRangeAt(0);
+      const breakTag = document.createElement('br');
+      range.insertNode(breakTag);
+      selection.collapseToEnd();
+    }
+
+    else if (event.keyCode === 18) {
+      // Alt
+      
+    }
+
+    else if (event.keyCode === 27) {
+      // Esc
+      this.props.editor.blur();
+    }
+
+    else if (event.keyCode === 32) {
+      // SpaceBar
+      const { selection } = this.props;
+      const range = selection.getRangeAt(0);
+      const space = document.createElement('space');
+      space.innerHTML = '&nbsp;';
+      range.insertNode(space);
+      selection.collapseToEnd();
+    }
+
+    else {
+
+      // Other Keys Goes Here
+
+    }
+
+  }
+  
+  componentDidMount() {
+
+    this.props.getSelectionUpdate();
+
   }
 
   render() {
@@ -38,6 +97,7 @@ class InputArea extends Component {
         onBlur={ this.handleBlur }
         onMouseUp={ this.handleMouseUp }
         onMouseDown={ this.handleMouseDown }
+        onKeyDown={ this.handleKeyDown }
         >
       </div>
     );
