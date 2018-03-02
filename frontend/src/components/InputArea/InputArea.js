@@ -12,14 +12,11 @@ class InputArea extends Component {
   state = {
     content: '<br/>'
   }
-  
-  handleBlur = (event) => {
-    const { innerHTML } = event.target;
-    this.props.updateInput(innerHTML);
-  }
-
+    
   handleMouseUp = (event) => {
+    const { innerHTML } = event.target;
     this.props.getSelectionUpdate();
+    this.props.updateInput(innerHTML);
   }
 
   handleMouseDown = (event) => {
@@ -79,13 +76,15 @@ class InputArea extends Component {
 
       const { key, keyCode } = event;
 
-      var valid = 
+      const valid = 
         (keyCode > 47 && keyCode < 58)   ||
         (keyCode > 64 && keyCode < 91)   ||
         (keyCode > 95 && keyCode < 112)  ||
         (keyCode > 185 && keyCode < 193) ||
         (keyCode > 218 && keyCode < 223);
-          
+      
+      console.info('Create new rule for CTRL key combinations, e.g. CTRL + B for bold');
+
       if (valid && !event.ctrlKey) {
         event.preventDefault();
         
@@ -172,7 +171,7 @@ class InputArea extends Component {
       <div className="InputArea" contentEditable={ true } 
         // suppressContentEditableWarning={true}
         dangerouslySetInnerHTML={{ __html: this.state.content }}
-        onBlur={ this.handleBlur }
+        // onBlur={ this.handleBlur }
         onMouseUp={ this.handleMouseUp }
         onMouseDown={ this.handleMouseDown }
         onKeyDown={ this.handleKeyDown }
